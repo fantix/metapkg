@@ -1,14 +1,17 @@
-import pathlib
-import typing
+from __future__ import annotations
+from typing import *
 
-from poetry import packages
-from poetry import semver
+import pathlib
 
 from metapkg.packages import repository
 from metapkg.targets import base as targets
 from metapkg.targets.package import SystemPackage
 
 from .build import Build
+
+if TYPE_CHECKING:
+    from poetry.core.packages import package as poetry_pkg
+    from poetry.core.semver import version_constraint
 
 
 PACKAGE_WHITELIST = [
@@ -28,12 +31,12 @@ class GenericRepository(repository.Repository):
     def find_packages(
         self,
         name: str,
-        constraint: typing.Optional[
-            typing.Union[semver.VersionConstraint, str]
+        constraint: Optional[
+            Union[version_constraint.VersionConstraint, str]
         ] = None,
-        extras: typing.Optional[list] = None,
+        extras: Optional[list] = None,
         allow_prereleases: bool = False,
-    ) -> typing.List[packages.Package]:
+    ) -> list[poetry_pkg.Package]:
 
         if name in PACKAGE_WHITELIST:
             pkg = SystemPackage(

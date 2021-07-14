@@ -4,8 +4,9 @@ import tempfile
 import textwrap
 import typing
 
-from poetry import semver
-from poetry import packages as poetry_pkg
+from poetry.core.semver import version_constraint
+from poetry.core.packages import dependency as poetry_dep
+from poetry.core.packages import package as poetry_pkg
 from poetry.repositories import pypi_repository
 
 from metapkg import tools
@@ -19,8 +20,8 @@ from .utils import python_dependency_from_pep_508
 PythonPackage = poetry_pkg.Package
 
 
-python_dependency = poetry_pkg.Dependency(name="python", constraint=">=3.7")
-wheel_dependency = poetry_pkg.Dependency(name="pypkg-wheel", constraint="*")
+python_dependency = poetry_dep.Dependency(name="python", constraint=">=3.7")
+wheel_dependency = poetry_dep.Dependency(name="pypkg-wheel", constraint="*")
 
 
 def set_python_runtime_dependency(dep):
@@ -37,7 +38,7 @@ class PyPiRepository(pypi_repository.PyPiRepository):
         self,
         name: str,
         constraint: typing.Optional[
-            typing.Union[semver.VersionConstraint, str]
+            typing.Union[version_constraint.VersionConstraint, str]
         ] = None,
         extras: typing.Optional[list] = None,
         allow_prereleases: bool = False,
@@ -189,7 +190,7 @@ class PyPiRepository(pypi_repository.PyPiRepository):
 
     def _get_build_requires(
         self, package
-    ) -> typing.List[poetry_pkg.Dependency]:
+    ) -> typing.List[poetry_dep.Dependency]:
         with tempfile.TemporaryDirectory() as tmpdir, tempfile.TemporaryDirectory() as tardir:
             tarball = package.source.tarball(
                 package, target_dir=pathlib.Path(tardir), io=self._io
@@ -412,12 +413,12 @@ class BundledPythonPackage(PythonMixin, base.BundledPackage):
 
         return package
 
-    def get_requirements(self) -> typing.List[poetry_pkg.Dependency]:
+    def get_requirements(self) -> typing.List[poetry_dep.Dependency]:
         reqs = super().get_requirements()
         reqs.append(python_dependency)
         return reqs
 
-    def get_build_requirements(self) -> typing.List[poetry_pkg.Dependency]:
+    def get_build_requirements(self) -> typing.List[poetry_dep.Dependency]:
         reqs = super().get_requirements()
         reqs.append(python_dependency)
         reqs.append(wheel_dependency)

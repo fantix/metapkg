@@ -9,14 +9,15 @@ import sys
 import textwrap
 import typing
 
-from poetry import packages as poetry_pkg
-from poetry import vcs
+from poetry.core.packages import dependency as poetry_dep
+from poetry.core.packages import package as poetry_pkg
+from poetry.core import vcs
 
 from . import repository
 from . import sources as af_sources
 
 
-class Dependency(poetry_pkg.Dependency):
+class Dependency(poetry_dep.Dependency):
     pass
 
 
@@ -285,14 +286,16 @@ class BundledPackage(BasePackage):
         if self.aliases:
             for alias in self.aliases:
                 pkg = DummyPackage(name=alias, version=self.version)
-                pkg.add_dependency(self.name, self.version)
+                pkg.add_dependency(
+                    poetry_dep.Dependency(self.name, self.version)
+                )
                 repository.bundle_repo.add_package(pkg)
 
     def get_requirements(self) -> typing.List[Dependency]:
         reqs = []
         for item in self.artifact_requirements:
             if isinstance(item, str):
-                reqs.append(poetry_pkg.dependency_from_pep_508(item))
+                reqs.append(poetry_dep.Dependency.create_from_pep_508(item))
             else:
                 reqs.append(item)
         return reqs
@@ -301,7 +304,7 @@ class BundledPackage(BasePackage):
         reqs = []
         for item in self.artifact_build_requirements:
             if isinstance(item, str):
-                reqs.append(poetry_pkg.dependency_from_pep_508(item))
+                reqs.append(poetry_dep.Dependency.create_from_pep_508(item))
             else:
                 reqs.append(item)
         return reqs

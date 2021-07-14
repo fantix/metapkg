@@ -6,9 +6,6 @@ import shlex
 import textwrap
 import typing
 
-from poetry import packages
-from poetry import semver
-
 from metapkg import tools
 from metapkg.packages import repository
 from metapkg.targets import base as targets
@@ -16,6 +13,10 @@ from metapkg.targets import generic
 from metapkg.targets.package import SystemPackage
 
 from . import build as macbuild
+
+if TYPE_CHECKING:
+    from poetry.core.packages import package as poetry_pkg
+    from poetry.core.semver import version_constraint
 
 
 PACKAGE_WHITELIST = [
@@ -203,11 +204,11 @@ class MacOSRepository(repository.Repository):
         self,
         name: str,
         constraint: typing.Optional[
-            typing.Union[semver.VersionConstraint, str]
+            typing.Union[version_constraint.VersionConstraint, str]
         ] = None,
         extras: typing.Optional[list] = None,
         allow_prereleases: bool = False,
-    ) -> typing.List[packages.Package]:
+    ) -> typing.List[poetry_pkg.Package]:
 
         if name in PACKAGE_WHITELIST:
             pkg = SystemPackage(

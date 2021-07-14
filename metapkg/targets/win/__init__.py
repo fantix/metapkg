@@ -1,23 +1,26 @@
 from __future__ import annotations
-from typing import *  # noqa
-
-from poetry import packages
-from poetry import semver
+from typing import *
 
 from metapkg.packages import repository
 from metapkg.targets import generic
 
 from . import build as winbuild
 
+if TYPE_CHECKING:
+    from poetry.core.packages import package as poetry_pkg
+    from poetry.core.semver import version_constraint
+
 
 class WindowsRepository(repository.Repository):
     def find_packages(
         self,
         name: str,
-        constraint: Optional[Union[semver.VersionConstraint, str]] = None,
-        extras: Optional[list] = None,
+        constraint: Optional[
+            Union[version_constraint.VersionConstraint, str]
+        ] = None,
+        extras: Optional[list[str]] = None,
         allow_prereleases: bool = False,
-    ) -> List[packages.Package]:
+    ) -> list[poetry_pkg.Package]:
         return []
 
 

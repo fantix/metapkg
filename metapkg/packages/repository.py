@@ -1,6 +1,6 @@
 import itertools
 
-from poetry import packages as poetry_pkg
+from poetry.core.packages import package as poetry_pkg
 from poetry import repositories as poetry_repo
 from poetry.puzzle import provider as poetry_provider
 

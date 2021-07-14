@@ -3,8 +3,8 @@ import re
 import subprocess
 import typing
 
-from poetry import packages
-from poetry import semver
+from poetry.core.packages import package as poetry_pkg
+from poetry.core.semver import version_constraint
 
 from metapkg import tools
 from metapkg.packages import repository
@@ -96,11 +96,11 @@ class RPMRepository(repository.Repository):
         self,
         name: str,
         constraint: typing.Optional[
-            typing.Union[semver.VersionConstraint, str]
+            typing.Union[version_constraint.VersionConstraint, str]
         ] = None,
         extras: typing.Optional[list] = None,
         allow_prereleases: bool = False,
-    ) -> typing.List[packages.Package]:
+    ) -> typing.List[poetry_pkg.Package]:
 
         if name not in self._parsed:
             packages = self.apt_get_packages(name)

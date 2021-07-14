@@ -3,7 +3,7 @@ import pathlib
 import subprocess
 import urllib.parse
 
-from poetry import vcs
+from poetry.core import vcs
 
 from metapkg import cache
 
