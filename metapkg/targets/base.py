@@ -392,10 +392,13 @@ class Build:
             if pkg.name == name:
                 return pkg
 
-        raise LookupError(f"no such package: {name}")
-
     def get_packages(self, names):
-        return [self.get_package(name) for name in names]
+        packages = []
+        for name in names:
+            package = self.get_package(name)
+            if package is not None:
+                packages.append(package)
+        return packages
 
     def is_bundled(self, pkg):
         return pkg in self._bundled
