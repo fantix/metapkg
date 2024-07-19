@@ -26,6 +26,7 @@ setup(
         'python-magic-bin~=0.4.14; platform_system!="Linux" and platform_machine!="arm64"',
         "wheel>=0.32.3",
         "setuptools-rust>=0.11.4",
+        "setuptools<70.2.0",
         "tomli>=1.2",
     ],
     extras_require={
